@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const fetch = require('node-fetch');
 
 // Load environment variables
 dotenv.config();
@@ -13,37 +14,52 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Serve static files (frontend)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve frontend.html at the root URL
+// Serve frontend
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'frontend.html'));
 });
 
-// Recipe Generation Endpoint
+// DeepSeek API Integration
 app.post('/generate-recipes', async (req, res) => {
-  const { ingredients } = req.body;
-
-  if (!ingredients) {
-    return res.status(400).json({ error: 'Please provide ingredients' });
-  }
-
   try {
-    // Replace this with your DeepSeek API call
-    const mockResponse = {
-      recipes: `## Test Recipe\n⏱ 20 mins\n### Ingredients\n- ${ingredients}\n### Instructions\n1. Test step`
-    };
+    const { ingredients } = req.body;
+    
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [{
+          role: "user",
+          content: `Create 3 recipes using: ${ingredients}. Format each with:
+          1. Name (##)
+          2. Time (⏱)
+          3. Difficulty (⚡)
+          4. Ingredients (###)
+          5. Instructions (numbered)
+          6. Tips (💡)
+          Use markdown.`
+        }],
+        temperature: 0.7,
+        max_tokens: 1000
+      })
+    });
 
-    res.json(mockResponse);
+    const data = await response.json();
+    res.json({ recipes: data.choices[0].message.content });
+    
   } catch (error) {
-    console.error('Error:', error);
+    console.error('DeepSeek API Error:', error);
     res.status(500).json({ error: 'Failed to generate recipes' });
   }
 });
 
-// Start Server
+// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server running on https://giga-recipe-ai.onrender.com/`);
 });
