@@ -2,12 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Spoonacular API Proxy Endpoint
 app.post('/generate-recipes', async (req, res) => {
@@ -37,6 +41,11 @@ app.post('/generate-recipes', async (req, res) => {
         console.error('Error:', error);
         res.status(500).json({ error: 'Failed to fetch recipes' });
     }
+});
+
+// Fallback route for frontend routing
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
