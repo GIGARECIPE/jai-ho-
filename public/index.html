@@ -6,7 +6,6 @@
     <title>GIGA RECIPE AI - Smart Cooking Assistant</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* ===== Base Styles ===== */
         :root {
             --primary-color: #FF6B6B;
             --secondary-color: #4ECDC4;
@@ -27,12 +26,11 @@
         body {
             background-color: var(--bg-dark);
             color: var(--text-dark);
-            transition: var(--transition);
             line-height: 1.6;
             min-height: 100vh;
         }
 
-        /* ===== Navigation ===== */
+        /* Navigation */
         .nav {
             position: fixed;
             top: 0;
@@ -43,16 +41,7 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
-        }
-
-        .nav h1 {
-            font-size: 1.8rem;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .nav-links {
@@ -61,42 +50,36 @@
         }
 
         .nav-links a {
-            text-decoration: none;
             color: var(--text-light);
-            font-weight: 500;
+            text-decoration: none;
             transition: var(--transition);
         }
 
-        .nav-links a:hover {
-            color: var(--primary-color);
+        /* Pages */
+        .page {
+            display: none;
+            padding: 100px 2rem 2rem;
+            min-height: 100vh;
         }
 
-        /* ===== Hero Section ===== */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
-                        url('https://images.unsplash.com/photo-1490645935967-10de6ba17061') center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Home Page */
+        #homePage {
             text-align: center;
-            padding: 2rem;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                      url('https://images.unsplash.com/photo-1490645935967-10de6ba17061') center/cover;
             color: white;
-            margin-top: -80px;
         }
 
-        .hero-title {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 1s ease;
-        }
-
+        /* Recipe Generation Section */
         .search-container {
-            width: 100%;
             max-width: 800px;
+            margin: 2rem auto;
             position: relative;
-            animation: fadeInUp 1s 0.2s ease backwards;
         }
 
         #ingredientInput {
@@ -104,175 +87,47 @@
             padding: 1.5rem;
             border-radius: 50px;
             border: none;
-            font-size: 1.1rem;
-            padding-right: 180px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             background: var(--bg-light);
             color: var(--text-light);
         }
 
-        .ai-search-btn {
-            position: absolute;
-            right: 5px;
-            top: 5px;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            border: none;
-            background: var(--primary-color);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .ai-search-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255,107,107,0.4);
-        }
-
-        /* ===== Chat Interface ===== */
-        .chat-container {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 400px;
-            max-width: 90%;
-            background: var(--bg-light);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transform: translateY(150%);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            max-height: 70vh;
-        }
-
-        .chat-container.active {
-            transform: translateY(0);
-        }
-
-        .chat-header {
-            padding: 1.5rem;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 20px 20px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .close-chat {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 1.5rem;
-            overflow-y: auto;
-            background: var(--bg-light);
-            color: var(--text-light);
-        }
-
-        /* ===== Recipe Display ===== */
-        .recipe-response {
-            padding: 1rem;
-            background: rgba(255,107,107,0.05);
-            border-radius: 15px;
-            margin: 1rem 0;
-        }
-
-        .recipe-response h2 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .recipe-response h3 {
-            color: var(--secondary-color);
-            margin: 1rem 0;
-        }
-
-        .recipe-response ul {
-            padding-left: 2rem;
-            margin: 1rem 0;
-        }
-
-        .recipe-response ol {
-            padding-left: 2rem;
-            margin: 1rem 0;
-        }
-
-        /* ===== Animations ===== */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===== Dark Mode Toggle ===== */
-        .theme-toggle {
-            position: fixed;
-            bottom: 2rem;
-            left: 2rem;
-            background: var(--primary-color);
-            color: white;
-            padding: 1rem;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transition: var(--transition);
-        }
-
-        /* ===== Error Handling ===== */
-        .loading-message {
+        /* About Us Page */
+        #aboutPage {
+            max-width: 800px;
+            margin: 0 auto;
             text-align: center;
+        }
+
+        .contact-info {
+            background: var(--bg-light);
             padding: 2rem;
-            color: var(--secondary-color);
+            border-radius: 20px;
+            margin-top: 2rem;
         }
 
-        .error-message {
-            color: #ff6b6b;
-            padding: 1rem;
-            background: rgba(255,107,107,0.1);
-            border-radius: 8px;
-            margin: 1rem 0;
-            border: 1px solid rgba(255,107,107,0.3);
+        /* Recipes Blog Page */
+        #recipesPage {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* ===== Responsive Design ===== */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .chat-container {
-                width: 90%;
-                right: 5%;
-            }
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
 
-            #ingredientInput {
-                padding-right: 120px;
-                font-size: 1rem;
-            }
+        .blog-card {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
 
-            .ai-search-btn {
-                padding: 0.8rem 1.5rem;
-                font-size: 0.9rem;
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -281,159 +136,100 @@
     <nav class="nav">
         <h1><i class="fas fa-robot"></i> GIGA RECIPE AI</h1>
         <div class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#recipes">Recipes</a>
-            <a href="#about">About</a>
+            <a href="#" onclick="showPage('homePage')">Home</a>
+            <a href="#" onclick="showPage('recipesPage')">Recipes</a>
+            <a href="#" onclick="showPage('aboutPage')">About Us</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <h1 class="hero-title">AI-Powered Recipe Generation</h1>
+    <!-- Home Page -->
+    <section id="homePage" class="page active">
+        <h1>AI-Powered Recipe Generator</h1>
         <div class="search-container">
             <input type="text" id="ingredientInput" 
-                   placeholder="What ingredients do you have? (e.g., chicken, tomatoes, garlic)">
-            <button class="ai-search-btn" onclick="toggleChat(true)">
-                <i class="fas fa-magic"></i> Generate Recipes
+                   placeholder="Enter ingredients (e.g., 'chicken tomatoes garlic')">
+            <button class="generate-btn" onclick="generateRecipe()">
+                <i class="fas fa-magic"></i> Generate Recipe
             </button>
+        </div>
+        <div id="recipeResult"></div>
+    </section>
+
+    <!-- Recipes Blog Page -->
+    <section id="recipesPage" class="page">
+        <h1>Culinary Inspiration</h1>
+        <div class="blog-grid">
+            <div class="blog-card">
+                <h2>Gluten-Free Wonders</h2>
+                <p>Discover delicious gluten-free recipes from around the world.</p>
+            </div>
+            <div class="blog-card">
+                <h2>Global Cuisines</h2>
+                <p>Explore authentic recipes from different cultures.</p>
+            </div>
         </div>
     </section>
 
-    <!-- Chat Interface -->
-    <div class="chat-container" id="chatBox">
-        <div class="chat-header">
-            <h3><i class="fas fa-concierge-bell"></i> GIGA Chef Assistant</h3>
-            <button class="close-chat" onclick="toggleChat(false)">&times;</button>
+    <!-- About Us Page -->
+    <section id="aboutPage" class="page">
+        <h1>About Our Kitchen</h1>
+        <div class="contact-info">
+            <h2>Contact Information</h2>
+            <p>Email: www.shubhamverma.1239.@gmail.com</p>
+            <p>Phone: +91 8094919876</p>
+            <p>Address: H.no 71 Saket nagar , jhalawar,Rajasthan,INDIA</p>
         </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="welcome-message">
-                <h3>Welcome to GIGA RECIPE AI! 🧑🍳</h3>
-                <p>Start by entering ingredients above</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dark Mode Toggle -->
-    <div class="theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
-    </div>
+    </section>
 
     <script>
-        // ===== Core Functionality =====
-        async function generateRecipe() {
-            const ingredients = document.getElementById('ingredientInput').value.trim();
-            const chatMessages = document.getElementById('chatMessages');
-            
-            if (!ingredients) {
-                showError("Please enter some ingredients first!");
-                return;
-            }
+        // Navigation Control
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
 
-            chatMessages.innerHTML = `
-                <div class="loading-message">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    Analyzing ${ingredients.split(',').length} ingredients...
+        // Recipe Generation
+        async function generateRecipe() {
+            const ingredients = document.getElementById('ingredientInput').value;
+            const resultDiv = document.getElementById('recipeResult');
+            
+            resultDiv.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Creating your masterpiece...
                 </div>
             `;
 
             try {
                 const response = await fetch('/generate-recipes', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ ingredients }),
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        ingredients,
+                        model: "gpt-4-1106-preview"  // Replace with your model
+                    })
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch recipes');
-                }
-
-                const data = await response.json();
-                displayRecipes(data);
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        // ===== UI Functions =====
-        function displayRecipes(recipes) {
-            const chatMessages = document.getElementById('chatMessages');
-            
-            if (!recipes || recipes.length === 0) {
-                showError("No recipes found. Try different ingredients!");
-                return;
-            }
-
-            let recipesHTML = '<div class="recipe-response">';
-            recipes.forEach(recipe => {
-                recipesHTML += `
+                const recipe = await response.json();
+                resultDiv.innerHTML = `
                     <div class="recipe-card">
                         <h2>${recipe.title}</h2>
-                        ${recipe.image ? `<img src="${recipe.image}" alt="${recipe.title}" class="recipe-image">` : ''}
-                        <div class="ingredient-info">
-                            <h3>Used Ingredients</h3>
-                            <ul>
-                                ${recipe.usedIngredients.map(ing => `<li>${ing.original}</li>`).join('')}
-                            </ul>
-                            
-                            <h3>Missing Ingredients</h3>
-                            <ul>
-                                ${recipe.missedIngredients.map(ing => `<li>${ing.original}</li>`).join('')}
-                            </ul>
-                        </div>
-                        <a href="https://spoonacular.com/recipes/${recipe.title.toLowerCase().replace(/ /g, '-')}-${recipe.id}" 
-                           target="_blank" class="recipe-link">
-                            View Full Recipe
-                        </a>
+                        <p>${recipe.description}</p>
+                        <h3>Ingredients:</h3>
+                        <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+                        <h3>Instructions:</h3>
+                        <ol>${recipe.instructions.map(s => `<li>${s}</li>`).join('')}</ol>
                     </div>
                 `;
-            });
-            recipesHTML += '</div>';
-            chatMessages.innerHTML = recipesHTML;
-        }
-
-        function showError(message) {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = `
-                <div class="error-message">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    ${message}
-                </div>
-            `;
-        }
-
-        // ===== Chat Controls =====
-        function toggleChat(shouldGenerate) {
-            const chatBox = document.getElementById('chatBox');
-            if (shouldGenerate && !chatBox.classList.contains('active')) {
-                generateRecipe();
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i> Error: ${error.message}
+                    </div>
+                `;
             }
-            chatBox.classList.toggle('active');
         }
-
-        // ===== Theme Management =====
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            document.querySelector('.nav').classList.toggle('dark-mode');
-            const themeIcon = document.querySelector('.theme-toggle i');
-            themeIcon.classList.toggle('fa-moon');
-            themeIcon.classList.toggle('fa-sun');
-        }
-
-        // ===== Utility Functions =====
-        function saveRecipe() {
-            alert('Recipe saved to favorites!');
-        }
-
-        function printRecipes() {
-            window.print();
-        }
-
-        // Event Listeners
-        document.getElementById('ingredientInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') toggleChat(true);
-        });
     </script>
 </body>
 </html>
