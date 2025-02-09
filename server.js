@@ -1,53 +1,34 @@
 require('dotenv').config();
 const express = require('express');
-const fetch = require('node-fetch');
+const { OpenAI } = require('openai');
 const cors = require('cors');
-const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Spoonacular API Proxy Endpoint
 app.post('/generate-recipes', async (req, res) => {
-    const { ingredients } = req.body;
-
-    if (!ingredients) {
-        return res.status(400).json({ error: 'Ingredients are required' });
-    }
-
     try {
-        const params = new URLSearchParams({
-            ingredients: ingredients,
-            number: 5,
-            apiKey: process.env.SPOONACULAR_API_KEY,
-            ignorePantry: true,
-            ranking: 1
+        const { ingredients } = req.body;
+        const prompt = `
+            Create a detailed recipe using these ingredients: ${ingredients}.
+            Include title, description, ingredients list, and step-by-step instructions.
+            Format as JSON with keys: title, description, ingredients, instructions.
+        `;
+
+        const completion = await openai.chat.completions.create({
+            messages: [{ role: "user", content: prompt }],
+            model: "gpt-4o-mini",
         });
 
-        const response = await fetch(`https://api.spoonacular.com/recipes/findByIngredients?${params}`);
-        if (!response.ok) {
-            throw new Error(`API Error: ${response.status} - ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        res.json(data);
+        const recipe = JSON.parse(completion.choices[0].message.content);
+        res.json(recipe);
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Failed to fetch recipes' });
+        res.status(500).json({ error: error.message });
     }
 });
 
-// Fallback route for frontend routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
