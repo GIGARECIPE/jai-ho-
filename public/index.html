@@ -3,232 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GIGA RECIPE AI - Smart Cooking Assistant</title>
+    <title>GIGA RECIPE AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #FF6B6B;
-            --secondary-color: #4ECDC4;
-            --bg-dark: #1A1A1A;
-            --text-dark: #FFFFFF;
-            --bg-light: #2D2D2D;
-            --text-light: #E0E0E0;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --dark: #1A1A1A;
+            --light: #F5F5F5;
+            --transition: all 0.3s ease;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Helvetica Neue', sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-dark);
+            background: var(--dark);
+            color: var(--light);
             line-height: 1.6;
-            min-height: 100vh;
         }
 
-        /* Navigation */
-        .nav {
+        /* Header */
+        .header {
             position: fixed;
             top: 0;
             width: 100%;
             background: rgba(26, 26, 26, 0.95);
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
+            padding: 1rem;
             backdrop-filter: blur(10px);
+            z-index: 1000;
+            text-align: center;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
+        .header h1 {
+            color: var(--primary);
+            font-size: 2rem;
         }
 
-        .nav-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        /* Pages */
-        .page {
-            display: none;
-            padding: 100px 2rem 2rem;
+        /* Main Container */
+        .container {
+            padding: 100px 1rem 2rem;
             min-height: 100vh;
         }
 
-        .page.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
+        /* Recipe Generator Section */
+        .generator-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
         }
 
-        /* Home Page */
-        #homePage {
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .filter-group {
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 8px;
+            color: var(--light);
+        }
+
+        /* Recipe Categories */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem 0;
+        }
+
+        .category-card {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category-card h3 {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0,0,0,0.7);
             text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
-                      url('https://images.unsplash.com/photo-1490645935967-10de6ba17061') center/cover;
-            color: white;
         }
 
-        /* Recipe Generation Section */
-        .search-container {
+        /* Contact Section */
+        .contact-section {
             max-width: 800px;
             margin: 2rem auto;
-            position: relative;
-        }
-
-        #ingredientInput {
-            width: 100%;
-            padding: 1.5rem;
-            border-radius: 50px;
-            border: none;
-            background: var(--bg-light);
-            color: var(--text-light);
-        }
-
-        /* About Us Page */
-        #aboutPage {
-            max-width: 800px;
-            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
             text-align: center;
         }
 
-        .contact-info {
-            background: var(--bg-light);
-            padding: 2rem;
-            border-radius: 20px;
-            margin-top: 2rem;
-        }
-
-        /* Recipes Blog Page */
-        #recipesPage {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .blog-card {
-            background: var(--bg-light);
-            padding: 1.5rem;
-            border-radius: 20px;
+        /* Generate Button */
+        .generate-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
             transition: var(--transition);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .generate-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px var(--primary);
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <h1><i class="fas fa-robot"></i> GIGA RECIPE AI</h1>
-        <div class="nav-links">
-            <a href="#" onclick="showPage('homePage')">Home</a>
-            <a href="#" onclick="showPage('recipesPage')">Recipes</a>
-            <a href="#" onclick="showPage('aboutPage')">About Us</a>
-        </div>
-    </nav>
+    <!-- Header -->
+    <div class="header">
+        <h1>GIGA RECIPE AI</h1>
+    </div>
 
-    <!-- Home Page -->
-    <section id="homePage" class="page active">
-        <h1>AI-Powered Recipe Generator</h1>
-        <div class="search-container">
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Recipe Generator -->
+        <section class="generator-section">
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Diet Preference</label>
+                    <select id="dietSelect">
+                        <option value="any">Any</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="non-vegetarian">Non-Vegetarian</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Difficulty Level</label>
+                    <select id="difficultySelect">
+                        <option value="any">Any</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Cuisine Country</label>
+                    <input type="text" id="countryInput" placeholder="Enter country">
+                </div>
+            </div>
+
             <input type="text" id="ingredientInput" 
-                   placeholder="Enter ingredients (e.g., 'chicken tomatoes garlic')">
+                   placeholder="🥕 Enter ingredients (e.g., chicken, tomatoes, garlic)"
+                   class="full-width-input">
+
             <button class="generate-btn" onclick="generateRecipe()">
                 <i class="fas fa-magic"></i> Generate Recipe
             </button>
-        </div>
-        <div id="recipeResult"></div>
-    </section>
+        </section>
 
-    <!-- Recipes Blog Page -->
-    <section id="recipesPage" class="page">
-        <h1>Culinary Inspiration</h1>
-        <div class="blog-grid">
-            <div class="blog-card">
-                <h2>Gluten-Free Wonders</h2>
-                <p>Discover delicious gluten-free recipes from around the world.</p>
+        <!-- Recipe Categories -->
+        <div class="category-grid">
+            <div class="category-card" onclick="showCategory('chinese')">
+                <img src="https://source.unsplash.com/random/800x600?chinese-food" alt="Chinese">
+                <h3>Chinese</h3>
             </div>
-            <div class="blog-card">
-                <h2>Global Cuisines</h2>
-                <p>Explore authentic recipes from different cultures.</p>
+            <div class="category-card" onclick="showCategory('italian')">
+                <img src="https://source.unsplash.com/random/800x600?italian-food" alt="Italian">
+                <h3>Italian</h3>
             </div>
+            <!-- Add more categories -->
         </div>
-    </section>
 
-    <!-- About Us Page -->
-    <section id="aboutPage" class="page">
-        <h1>About Our Kitchen</h1>
-        <div class="contact-info">
-            <h2>Contact Information</h2>
-            <p>Email: www.shubhamverma.1239.@gmail.com</p>
-            <p>Phone: +91 8094919876</p>
-            <p>Address: H.no 71 Saket nagar , jhalawar,Rajasthan,INDIA</p>
-        </div>
-    </section>
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <h2>Contact Us</h2>
+            <p>📧 contact@gigarecipe.ai</p>
+            <p>📱 +1 (555) 123-4567</p>
+            <p>🏢 AI Chef Street, Tech Valley</p>
+        </section>
+    </div>
 
     <script>
-        // Navigation Control
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-        }
-
         // Recipe Generation
         async function generateRecipe() {
             const ingredients = document.getElementById('ingredientInput').value;
-            const resultDiv = document.getElementById('recipeResult');
-            
-            resultDiv.innerHTML = `
-                <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i> Creating your masterpiece...
-                </div>
-            `;
+            const diet = document.getElementById('dietSelect').value;
+            const difficulty = document.getElementById('difficultySelect').value;
+            const country = document.getElementById('countryInput').value;
 
             try {
-                const response = await fetch('/generate-recipes', {
+                const response = await fetch('/generate', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         ingredients,
-                        model: "gpt-4-1106-preview"  // Replace with your model
+                        diet,
+                        difficulty,
+                        country
                     })
                 });
 
                 const recipe = await response.json();
-                resultDiv.innerHTML = `
-                    <div class="recipe-card">
-                        <h2>${recipe.title}</h2>
-                        <p>${recipe.description}</p>
-                        <h3>Ingredients:</h3>
-                        <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
-                        <h3>Instructions:</h3>
-                        <ol>${recipe.instructions.map(s => `<li>${s}</li>`).join('')}</ol>
-                    </div>
-                `;
+                alert(`Generated Recipe: ${recipe.title}`);
+                // Add recipe display logic here
             } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="error">
-                        <i class="fas fa-exclamation-triangle"></i> Error: ${error.message}
-                    </div>
-                `;
+                alert(`Error: ${error.message}`);
             }
+        }
+
+        // Category Handling
+        function showCategory(cuisine) {
+            // Add logic to show specific category recipes
+            alert(`Showing ${cuisine} recipes`);
         }
     </script>
 </body>
