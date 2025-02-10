@@ -8,22 +8,37 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
 
-app.post('/generate-recipes', async (req, res) => {
+app.post('/generate', async (req, res) => {
     try {
-        const { ingredients } = req.body;
+        const { ingredients, diet, difficulty, country } = req.body;
+        
         const prompt = `
-            Create a detailed recipe using these ingredients: ${ingredients}.
-            Include title, description, ingredients list, and step-by-step instructions.
-            Format as JSON with keys: title, description, ingredients, instructions.
+            Create a detailed recipe with these parameters:
+            - Ingredients: ${ingredients}
+            - Diet: ${diet}
+            - Difficulty: ${difficulty}
+            - Cuisine: ${country}
+            
+            Include in JSON format:
+            {
+                "title": "Recipe Title",
+                "description": "Recipe description",
+                "ingredients": [],
+                "instructions": [],
+                "cooking_time": "",
+                "nutrition_info": ""
+            }
         `;
 
-        const completion = await openai.chat.completions.create({
+        const response = await openai.chat.completions.create({
+            model: "gpt-4-mini", // Use your preferred model
             messages: [{ role: "user", content: prompt }],
-            model: "gpt-4o-mini",
+            max_tokens: 1000
         });
 
-        const recipe = JSON.parse(completion.choices[0].message.content);
+        const recipe = JSON.parse(response.choices[0].message.content);
         res.json(recipe);
     } catch (error) {
         res.status(500).json({ error: error.message });
