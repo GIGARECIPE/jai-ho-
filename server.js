@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+// Recipe Generation Endpoint
 app.post('/generate', async (req, res) => {
     try {
         const { ingredients, diet, difficulty, country } = req.body;
@@ -40,6 +41,33 @@ app.post('/generate', async (req, res) => {
 
         const recipe = JSON.parse(response.choices[0].message.content);
         res.json(recipe);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Category Recipes Endpoint
+app.get('/recipes/:cuisine', async (req, res) => {
+    try {
+        const { cuisine } = req.params;
+        const prompt = `
+            Generate 5 ${cuisine} recipes in JSON format:
+            [{
+                "title": "Recipe Title",
+                "description": "Recipe description",
+                "ingredients": [],
+                "instructions": []
+            }]
+        `;
+
+        const response = await openai.chat.completions.create({
+            model: "gpt-4-mini",
+            messages: [{ role: "user", content: prompt }],
+            max_tokens: 1000
+        });
+
+        const recipes = JSON.parse(response.choices[0].message.content);
+        res.json(recipes);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
