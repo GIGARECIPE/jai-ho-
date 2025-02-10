@@ -114,6 +114,15 @@
             text-align: center;
         }
 
+        /* Recipe Display Section */
+        .recipe-display {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+        }
+
         /* Contact Section */
         .contact-section {
             max-width: 800px;
@@ -189,6 +198,11 @@
             </button>
         </section>
 
+        <!-- Recipe Display -->
+        <div class="recipe-display" id="recipeDisplay">
+            <!-- Recipe content will be dynamically inserted here -->
+        </div>
+
         <!-- Recipe Categories -->
         <div class="category-grid">
             <div class="category-card" onclick="showCategory('chinese')">
@@ -219,6 +233,13 @@
             const difficulty = document.getElementById('difficultySelect').value;
             const country = document.getElementById('countryInput').value;
 
+            const recipeDisplay = document.getElementById('recipeDisplay');
+            recipeDisplay.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Generating your recipe...
+                </div>
+            `;
+
             try {
                 const response = await fetch('/generate', {
                     method: 'POST',
@@ -232,17 +253,51 @@
                 });
 
                 const recipe = await response.json();
-                alert(`Generated Recipe: ${recipe.title}`);
-                // Add recipe display logic here
+                recipeDisplay.innerHTML = `
+                    <h2>${recipe.title}</h2>
+                    <p>${recipe.description}</p>
+                    <h3>Ingredients:</h3>
+                    <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+                    <h3>Instructions:</h3>
+                    <ol>${recipe.instructions.map(s => `<li>${s}</li>`).join('')}</ol>
+                `;
             } catch (error) {
-                alert(`Error: ${error.message}`);
+                recipeDisplay.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i> Error: ${error.message}
+                    </div>
+                `;
             }
         }
 
         // Category Handling
-        function showCategory(cuisine) {
-            // Add logic to show specific category recipes
-            alert(`Showing ${cuisine} recipes`);
+        async function showCategory(cuisine) {
+            const recipeDisplay = document.getElementById('recipeDisplay');
+            recipeDisplay.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading ${cuisine} recipes...
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`/recipes/${cuisine}`);
+                const recipes = await response.json();
+                recipeDisplay.innerHTML = `
+                    <h2>${cuisine.toUpperCase()} Recipes</h2>
+                    ${recipes.map(recipe => `
+                        <div class="recipe-card">
+                            <h3>${recipe.title}</h3>
+                            <p>${recipe.description}</p>
+                        </div>
+                    `).join('')}
+                `;
+            } catch (error) {
+                recipeDisplay.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i> Error: ${error.message}
+                    </div>
+                `;
+            }
         }
     </script>
 </body>
